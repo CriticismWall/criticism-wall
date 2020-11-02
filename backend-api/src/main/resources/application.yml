@@ -1,1 +1,48 @@
 
+logging:
+  file:
+    max-size: 100MB
+  level:
+    root: INFO
+  pattern:
+    file: '%date %5level [%thread] %mdc{Request-Id} %-30logger{30}: %m%n%xEx{full}'
+    console: '%gray(%date) %highlight(%5level) %green([%thread]) %magenta([%mdc{Request-Id}]) %cyan(%-30logger{30}): %m%n%xEx{full}'
+
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: test,local
+  security:
+    filter:
+      order: 0
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  output.ansi.enabled: DETECT
+  datasource:
+    hikari.maximum-pool-size: 5
+    url: jdbc:postgresql://postgres:5432/boostfield
+    username: boostfield
+    password:
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        auto_quote_keyword: true
+        temp:
+          use_jdbc_metadata_defaults: false
+      jdbc:
+        lob:
+          non_contextual_creation: true
+
+
+web:
+  cors:
+    allowed-origins:
+      - '*'

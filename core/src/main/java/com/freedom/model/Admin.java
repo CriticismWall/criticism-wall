@@ -1,8 +1,10 @@
 package com.freedom.model;
 
 
+import com.freedom.model.base.Deletable;
 import lombok.*;
 
+import javax.persistence.Entity;
 
 
 /**
@@ -16,7 +18,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Admin {
+@Entity
+public class Admin extends Deletable {
+
 
     private String name ;
 
