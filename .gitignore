@@ -1,0 +1,44 @@
+.env
+**/.gradle
+**/build/
+**/application-test.yml
+**/application-local.yml
+**/application-server.yml
+**/application-local-test.yml
+**/application-local-test2.yml
+**/application-local-test*.yml
+**/application-server-test.yml
+**/logs/*
+**/rebel*
+classes/*
+spring-shell.log
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+.ideaDataSources
+dataSources
+*.iws
+*.iml
+*.ipr
+**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+personnal
+git-version.txt
+
+### SpringShell ###
+musicbible.backend-api.log
