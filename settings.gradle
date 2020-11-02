@@ -1,0 +1,4 @@
+rootProject.name = 'criticism-wall'
+include 'backend-api'
+include 'frontend-api'
+include 'core'
