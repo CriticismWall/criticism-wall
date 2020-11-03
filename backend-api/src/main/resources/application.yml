@@ -41,6 +41,15 @@ spring:
         lob:
           non_contextual_creation: true
 
+global:
+  secret: 81yf8ICpwg2jRZt#
+  expire: 640000000
+  alreadySetup: true
+  admin:
+    username: admin
+    password: 123456
+    nickname: admin
+    default_role: root
 
 web:
   cors:

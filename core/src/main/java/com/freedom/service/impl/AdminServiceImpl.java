@@ -8,8 +8,14 @@ import com.freedom.service.base.BaseServiceImpl;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,6 +43,22 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
         BooleanExpression expression = qAdmin.username.eq("dzl");
 
         Lists.newArrayList(adminRepository.findAll(expression));
+    }
+
+    @Override
+    public Optional<Admin> findByUsername(String username) {
+        return adminRepository.findByUsername(username);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getGrantedAuthority(String userId) {
+        Optional<Admin> optional = adminRepository.findByUsername(userId);
+        if (optional.isPresent()) {
+            Admin admin = optional.get();
+            return admin.getAuthorities();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "没有找到用户");
+        }
     }
 
 }
