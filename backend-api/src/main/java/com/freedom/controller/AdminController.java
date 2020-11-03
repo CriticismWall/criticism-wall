@@ -16,6 +16,7 @@ public class AdminController {
     public Admin add() {
         Admin admin = adminService.create();
         adminService.findTopBy();
+
         return admin;
     }
 

@@ -5,6 +5,7 @@ import com.freedom.model.QAdmin;
 import com.freedom.repository.AdminRepository;
 import com.freedom.service.AdminService;
 import com.freedom.service.base.BaseServiceImpl;
+import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,8 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
     @Override
     public void findTopBy() {
         BooleanExpression expression = qAdmin.username.eq("dzl");
-        adminRepository.findAll();
+
+        Lists.newArrayList(adminRepository.findAll(expression));
     }
 
 }
