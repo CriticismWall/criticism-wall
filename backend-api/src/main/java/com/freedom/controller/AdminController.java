@@ -1,4 +1,4 @@
-package com.freedom.backend.controller;
+package com.freedom.controller;
 
 import com.freedom.model.Admin;
 import org.springframework.web.bind.annotation.*;
