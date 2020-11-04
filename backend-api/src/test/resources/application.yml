@@ -1,0 +1,33 @@
+logging:
+  file:
+    max-size: 100MB
+  level:
+    root: info
+    org.springframework.web: info
+    org.hibernate: info
+
+
+server:
+  port: 8085
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:15432/criticism
+    username: musicbible
+    password: musicbible
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: false
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        auto_quote_keyword: true
+        temp:
+          use_jdbc_metadata_defaults: false
+
+
+

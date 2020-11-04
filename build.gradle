@@ -9,14 +9,14 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
 ext {
-    springBootVersion = '2.3.5.RELEASE'
+    springBootVersion = '2.1.1.RELEASE'
     queryDslVersion = '4.2.1'
 }
+dependencies {
+
+}
+
 subprojects {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
@@ -65,6 +65,10 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        testLogging.showStandardStreams = true
+        outputs.upToDateWhen { false }
+        systemProperty 'spring.profiles.active', 'test,local'
+        systemProperty 'es.set.netty.runtime.available.processors', 'false'
     }
 }
 

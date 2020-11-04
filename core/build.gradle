@@ -5,6 +5,15 @@ dependencies {
     implementation('com.vladmihalcea:hibernate-types-52:2.3.5')
     compileOnly('org.springframework.boot:spring-boot-starter-data-jpa')
     compileOnly('org.springframework.boot:spring-boot-starter-security')
+    compileOnly('org.springframework.boot:spring-boot-starter-web')
+    compileOnly('org.springframework.boot:spring-boot-starter')
+    compileOnly('org.junit.jupiter:junit-jupiter-api')
     compileOnly('io.jsonwebtoken:jjwt:0.9.1')
+    testCompile('org.springframework.boot:spring-boot-starter-test') {
+        exclude module: 'junit'
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation('org.junit.jupiter:junit-jupiter-api')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
 }
 
