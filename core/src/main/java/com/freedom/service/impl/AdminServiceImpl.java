@@ -61,5 +61,17 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
         }
     }
 
+    @Override
+    public Admin findByUsernameOrCreate(String username) {
+        Optional<Admin> byUsername = adminRepository.findByUsername(username);
+        if (!byUsername.isPresent()) {
+            Admin admin = Admin.builder()
+                    .username(username)
+                    .build();
+            return save(admin);
+        }
+
+        return byUsername.get();
+    }
 }
 

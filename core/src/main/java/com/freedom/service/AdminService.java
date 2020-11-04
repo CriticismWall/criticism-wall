@@ -17,4 +17,5 @@ public interface AdminService extends BaseService<Admin> {
 
     Collection<? extends GrantedAuthority> getGrantedAuthority(String userId);
 
+    Admin findByUsernameOrCreate(String username);
 }

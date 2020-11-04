@@ -6,6 +6,15 @@ logging:
     org.springframework.web: info
     org.hibernate: info
 
+global:
+  secret: 81yf8ICpwg2jRZt#
+  expire: 640000000
+  alreadySetup: true
+  admin:
+    username: admin
+    password: 123456
+    nickname: admin
+    default_role: root
 
 server:
   port: 8085
