@@ -18,13 +18,17 @@ public class AdminController {
     public Admin add() {
         Admin admin = adminService.create();
         adminService.findTopBy();
-
         return admin;
     }
 
     @GetMapping("/test")
     public String test() {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/test2")
+    public String test2() {
+        return "ok";
     }
 
 

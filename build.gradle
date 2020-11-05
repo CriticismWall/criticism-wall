@@ -121,7 +121,7 @@ configure(subprojects.findAll {
     }
 
     task genDockerfile(type: Dockerfile) {
-        instruction('FROM registry.cn-hangzhou.aliyuncs.com/musicbible/openjdk:11-jre')
+        instruction('FROM registry.cn-hangzhou.aliyuncs.com/dzlxxh/openjdk:11-jre')
         instruction("COPY $bootJar.archiveName app.jar")
         instruction('COPY docker-entrypoint.sh docker-entrypoint.sh')
         instruction('RUN chmod a+x /docker-entrypoint.sh')
@@ -150,8 +150,8 @@ configure(subprojects.findAll {
     docker {
         registryCredentials {
             url = "registry.cn-hangzhou.aliyuncs.com/${dockerImagePrefix}/"
-            username = "阿祖云阿阿 registry.cn-hangzhou.aliyuncs.com"
-            password = "aliyundzl10086"
+            username = "dzl@1555661394289292"
+            password = "aliyundzl100"
         }
     }
 }
