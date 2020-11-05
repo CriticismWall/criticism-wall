@@ -1,0 +1,67 @@
+version: '3'
+networks:
+  enlightenment: 
+        driver: bridge
+services:
+  db:
+    image: postgres:10.0
+    container_name: enlightenment_db
+    restart: always
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      enlightenment:
+        aliases:
+          - db
+    environment:
+      POSTGRES_DB: enlightenment
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: boostfield
+    ports:
+      - 6432:5432
+
+  backend-api:
+    image: registry.cn-hangzhou.aliyuncs.com/enlightenment/backend-api:latest
+    container_name: enlightenment_backend-api
+    restart: always
+    ports:
+      - 8085:8080
+    volumes:
+      - ./logs/backend:/logs
+    networks:
+      - enlightenment
+    depends_on:
+      - db
+      - redis
+    environment:
+      SB_ARGS: "-Dspring.profiles.active=development \
+      -Dspring.datasource.url=jdbc:postgresql://db:5432/enlightenment \
+      -Dspring.datasource.username=postgres \
+      -Dspring.flyway.enabled=false \
+      -Dspring.jpa.hibernate.ddl-auto=update \
+      -Dspring.datasource.password=boostfield \
+      -Dspring.redis.host=redis "
+
+  game-api:
+    image: registry.cn-hangzhou.aliyuncs.com/enlightenment/game-api:latest
+    container_name: enlightenment_game_api
+    restart: always
+    ports:
+      - 8086:8080
+    volumes:
+      - ./logs/game:/logs
+    networks:
+      - enlightenment
+    depends_on:
+      - db
+      - backend-api
+      - redis
+    environment:
+      SB_ARGS: "-Dspring.profiles.active=development \
+      -Dspring.datasource.url=jdbc:postgresql://db:5432/enlightenment \
+      -Dspring.datasource.username=postgres \
+      -Dspring.datasource.password=boostfield \
+      -Dspring.flyway.enabled=false \
+      -Dspring.jpa.hibernate.ddl-auto=update \
+      -Dspring.redis.host=redis  "
+
