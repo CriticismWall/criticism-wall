@@ -41,6 +41,8 @@ public abstract class BaseTest {
     @Autowired
     private AdminService adminService;
 
+    static String path = "";
+
     private Gson gson = new Gson();
 
     protected <T> T persist(T t) {

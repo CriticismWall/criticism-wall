@@ -1,27 +1,44 @@
+buildscript {
+
+    ext {
+        springBootVersion = '2.1.1.RELEASE'
+        queryDslVersion = '4.2.1'
+    }
+
+
+    repositories {
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("com.bmuschko:gradle-docker-plugin:4.1.0")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+
+    }
+}
+
+
+
 plugins {
     id 'java'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id "io.gitlab.arturbosch.detekt" version "1.0.0-RC12"
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+def gitCurrentSha = System.getenv('CI_COMMIT_SHORT_SHA') ?: 'latest'
+def gitCurrentTag = System.getenv('CI_COMMIT_TAG')
 
-repositories {
-    mavenCentral()
-}
-ext {
-    springBootVersion = '2.1.1.RELEASE'
-    queryDslVersion = '4.2.1'
-}
-dependencies {
-
-}
+ext.gitCurrentRef = gitCurrentTag ?: gitCurrentSha
+ext.dockerImageVersion = gitCurrentRef
 
 subprojects {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
     apply plugin: 'idea'
-
+    apply plugin: 'io.gitlab.arturbosch.detekt'
+    apply plugin: 'com.bmuschko.docker-remote-api'
 
     group = 'com.freedom'
     version = '0.0.1-SNAPSHOT'
@@ -34,7 +51,10 @@ subprojects {
     }
 
     repositories {
+        jcenter()
+        mavenLocal()
         mavenCentral()
+        gradlePluginPortal()
     }
 
     dependencies {
@@ -69,6 +89,70 @@ subprojects {
         outputs.upToDateWhen { false }
         systemProperty 'spring.profiles.active', 'test,local'
         systemProperty 'es.set.netty.runtime.available.processors', 'false'
+    }
+
+
+}
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+configure(subprojects.findAll {
+    it.name == 'backend-api' || it.name == 'frontend-api'
+}) {
+    apply plugin: 'org.springframework.boot'
+    def dockerImagePrefix = "criticism"
+    task copyEntrypoint {
+        copy {
+            from 'docker-entrypoint.sh'
+            into 'build/docker'
+        }
+    }
+
+    task copyArchieve {
+        dependsOn(bootJar)
+        doLast {
+            copy {
+                from "build/libs/${bootJar.archiveName}"
+                into 'build/docker'
+            }
+        }
+    }
+
+    task genDockerfile(type: Dockerfile) {
+        instruction('FROM registry.cn-hangzhou.aliyuncs.com/musicbible/openjdk:11-jre')
+        instruction("COPY $bootJar.archiveName app.jar")
+        instruction('COPY docker-entrypoint.sh docker-entrypoint.sh')
+        instruction('RUN chmod a+x /docker-entrypoint.sh')
+        instruction('ENTRYPOINT ["/docker-entrypoint.sh"]')
+        instruction('EXPOSE 8080')
+    }
+
+    task buildDockerImage(type: DockerBuildImage) {
+        dependsOn(genDockerfile)
+        dependsOn(copyEntrypoint)
+        dependsOn(copyArchieve)
+        inputDir = file("build/docker")
+        tags = ["registry.cn-hangzhou.aliyuncs.com/${dockerImagePrefix}/$project.name:$project.dockerImageVersion"]
+    }
+
+    task pushDockerImage(type: DockerPushImage) {
+        dependsOn(buildDockerImage)
+        imageName = "registry.cn-hangzhou.aliyuncs.com/${dockerImagePrefix}/$project.name:$project.dockerImageVersion"
+    }
+
+    bootRun {
+        systemProperty 'spring.profiles.active', 'local'
+    }
+
+
+    docker {
+        registryCredentials {
+            url = "registry.cn-hangzhou.aliyuncs.com/${dockerImagePrefix}/"
+            username = "阿祖云阿阿 registry.cn-hangzhou.aliyuncs.com"
+            password = "aliyundzl10086"
+        }
     }
 }
 
