@@ -48,6 +48,7 @@ subprojects {
         compileOnly {
             extendsFrom annotationProcessor
         }
+        mapstruct
     }
 
     repositories {
