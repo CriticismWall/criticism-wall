@@ -16,7 +16,7 @@ spring:
     username: musicbible
     password: musicbible
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
     open-in-view: true
