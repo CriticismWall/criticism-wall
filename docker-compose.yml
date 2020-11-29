@@ -2,14 +2,15 @@ version: '3'
 networks:
   criticism:
         driver: bridge
+
+# please run 'gradle assemble' before docker-compose run
 services:
   db:
     image: postgres:10.0
     container_name: criticism_db
     restart: always
     volumes:
-      - ./data:/var/lib/postgresql/data
-      - ./sqldata:/sqldata
+      - pgdata:/var/lib/postgresql/data
     networks:
       criticism:
         aliases:
@@ -18,26 +19,46 @@ services:
       POSTGRES_DB: criticism
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-    ports:
-      - 6432:5432
 
   backend-api:
-    image: registry.cn-hangzhou.aliyuncs.com/criticism/backend-api:latest
+    build:
+      context: backend-api/.
+    image: backend-api:latest
     container_name: criticism_backend-api
-    restart: always
     ports:
       - 8085:8085
-    volumes:
-      - ./logs/backend:/logs
+    #volumes:
+    #  - ./logs/backend:/logs
     networks:
       - criticism
     depends_on:
       - db
     environment:
-      SB_ARGS: "-Dspring.profiles.active=dev \
-      -Dspring.datasource.url=jdbc:postgresql://db:5432/criticism \
-      -Dspring.datasource.username=postgres \
-      -Dspring.jpa.hibernate.ddl-auto=update \
-      -Dspring.datasource.password=1234 \
-      "
+      SERVER_PORT: 8085
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/criticism
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
 
+  frontend-api:
+    build:
+      context: frontend-api/.
+    image: frontend-api:latest
+    container_name: criticism_frontend-api
+    ports:
+      - 8086:8086
+    #volumes:
+    #  - ./logs/backend:/logs
+    networks:
+      - criticism
+    depends_on:
+      - db
+    environment:
+      SERVER_PORT: 8086
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/criticism
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+volumes:
+  pgdata:

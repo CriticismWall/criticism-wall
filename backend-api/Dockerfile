@@ -1,2 +1,3 @@
 FROM registry.cn-hangzhou.aliyuncs.com/dzlxxh/openjdk-entrypoint:11-jre
-COPY backend-api-R1.jar app.jar
+COPY build/libs/*.jar app.jar
+CMD ["java", "-jar", "app.jar"]
